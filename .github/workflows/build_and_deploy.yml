@@ -13,3 +13,4 @@ jobs:
         run: bash build-images.sh
         env:
           DOCKER_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          VENDOR: "Lappalainen Lab"
