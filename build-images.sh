@@ -5,7 +5,7 @@
 set -eo pipefail
 
 [[ -z ${VENDOR} ]] && VENDOR="$(basename $0)"
-REGISTRY="ghcr.io/$(dirname ${GITHUB_REPOSITORY})"
+REGISTRY="$(echo ghcr.io/$(dirname ${GITHUB_REPOSITORY}) | tr '[:upper:]' '[:lower:]')"
 
 #   Helper functions
 function timestamp() {
@@ -28,7 +28,7 @@ function build_docker() {
     local vendor="${4}"
     local root="$(pwd)"
     local builddir="$(dirname ${dockerfile})"
-    local name="$(basename ${builddir})"
+    local name="$(basename ${builddir}) | tr '[:upper:]' '[:lower:]'"
     cd -v ${builddir}
     (
         set -x
