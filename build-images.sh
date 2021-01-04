@@ -48,21 +48,18 @@ echo "Images provided by ${VENDOR}" >&2
 echo "Images built from ${GITHUB_REPOSITORY}" >&2
 echo "Images hosted at ${REGISTRY}" >&2
 
-#   Get the hashes between this current commit and any previous ones
+#   Fetch the current master commit
 (set -x; git fetch "https://github.com/${GITHUB_REPOSITORY}" +master:LLMASTER)
-
-# echo "Comparing ${HASHES[0]} and ${HASHES[1]}" >&2
-
-# [[ ${#HASHES[@]} -lt 2 ]] && (echo "Not enough hashes"; exit 0)
 
 #   Set up holding arrays for changed image files that need to be rebuilt
 declare -a DOCKERFILES=()
 
 #   Find all changed image files
-for diff in $(set -x; git diff --name-only ${GITHUB_SHA} LLMASTER); do
-    case $(basename ${diff}) in
+for DIFF in $(set -x; git diff --name-only ${GITHUB_SHA} LLMASTER); do
+    case $(basename ${DIFF}) in
         Dockerfile)
-            DOCKERFILES+=(${diff})
+            echo "Adding ${DIFF} to check queue" >&2
+            DOCKERFILES+=(${DIFF})
             ;;
         *)
             continue
