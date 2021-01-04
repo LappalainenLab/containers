@@ -38,7 +38,7 @@ function build_docker() {
             --label "org.opencontainers.image.revision=${revision}" \
             --label "org.opencontainers.image.vendor=${vendor}" \
             --label "org.opencontainers.image.documentation=${repo}"
-    )
+    ) >&2
     cd ${root}
     echo "${name}"
 }
