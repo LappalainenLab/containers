@@ -28,7 +28,7 @@ function build_docker() {
     local vendor="${4}"
     local root="$(pwd)"
     local builddir="$(dirname ${dockerfile})"
-    local name="$(basename ${builddir}) | tr '[:upper:]' '[:lower:]'"
+    local name="$(basename ${builddir}) | tr '[:upper:]' '[:lower:]')"
     cd ${builddir}
     (
         set -x
@@ -51,7 +51,6 @@ echo "Images hosted at ${REGISTRY}" >&2
 
 #   Fetch the current master commit
 LL_HASH=$(set -x; git log -n 1 --format="%H" HEAD^1)
-(set -x; git fetch "https://github.com/${GITHUB_REPOSITORY}" +master:LLMASTER)
 (set -x; echo $(git diff --name-only ${GITHUB_SHA} ${LL_HASH})) >&2
 
 #   Set up holding arrays for changed image files that need to be rebuilt
@@ -76,7 +75,7 @@ if [[ ${#DOCKERFILES[@]} -gt 0 ]]; then
     echo ${DOCKER_TOKEN} | docker login $(echo ${REGISTRY} | cut -f 1 -d '/') -u ${GITHUB_ACTOR} --password-stdin
     for IMAGE in ${DOCKERFILES[@]}; do
         echo "Working on $(basename $(dirname ${IMAGE}))" >&2
-        NAME=$(build_docker "${IMAGE}" "${GITHUB_REPOSITORY}" "${HASHES[0]}" "${VENDOR}")
+        NAME=$(build_docker "${IMAGE}" "https://github.com/${GITHUB_REPOSITORY}" "${GITHUB_SHA}" "${VENDOR}")
         (set -x; docker tag "${NAME}" "${REGISTRY}/${NAME}:latest")
         (set -x; docker push "${REGISTRY}/${NAME}:latest")
         VERSION=$(docker_version ${IMAGE})
