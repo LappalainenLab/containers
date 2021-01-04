@@ -50,6 +50,7 @@ echo "Images hosted at ${REGISTRY}" >&2
 
 #   Fetch the current master commit
 (set -x; git fetch "https://github.com/${GITHUB_REPOSITORY}" +master:LLMASTER)
+(set -x; echo git diff --name-only ${GITHUB_SHA} LLMASTER) >&2
 
 #   Set up holding arrays for changed image files that need to be rebuilt
 declare -a DOCKERFILES=()
