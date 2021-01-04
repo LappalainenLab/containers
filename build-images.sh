@@ -28,7 +28,7 @@ function build_docker() {
     local vendor="${4}"
     local root="$(pwd)"
     local builddir="$(dirname ${dockerfile})"
-    local name="$(basename ${builddir}) | tr '[:upper:]' '[:lower:]')"
+    local name="$(basename ${builddir} | tr '[:upper:]' '[:lower:]')"
     cd ${builddir}
     (
         set -x
