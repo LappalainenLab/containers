@@ -49,17 +49,17 @@ echo "Images built from ${GITHUB_REPOSITORY}" >&2
 echo "Images hosted at ${REGISTRY}" >&2
 
 #   Get the hashes between this current commit and any previous ones
-declare -a HASHES=($(set -x; git log -n 2 --format="%H"))
+(set -x; git fetch "https://github.com/${GITHUB_REPOSITORY}" +master:LLMASTER)
 
-echo "Comparing ${HASHES[0]} and ${HASHES[1]}" >&2
+# echo "Comparing ${HASHES[0]} and ${HASHES[1]}" >&2
 
-[[ ${#HASHES[@]} -lt 2 ]] && (echo "Not enough hashes"; exit 0)
+# [[ ${#HASHES[@]} -lt 2 ]] && (echo "Not enough hashes"; exit 0)
 
 #   Set up holding arrays for changed image files that need to be rebuilt
 declare -a DOCKERFILES=()
 
 #   Find all changed image files
-for diff in $(set -x; git diff --name-only ${HASHES[0]} ${HASHES[1]}); do
+for diff in $(set -x; git diff --name-only ${GITHUB_SHA} LLMASTER); do
     case $(basename ${diff}) in
         Dockerfile)
             DOCKERFILES+=(${diff})
@@ -76,7 +76,7 @@ if [[ ${#DOCKERFILES[@]} -gt 0 ]]; then
     echo ${DOCKER_TOKEN} | docker login $(echo ${REGISTRY} | cut -f 1 -d '/') -u ${GITHUB_ACTOR} --password-stdin
     for IMAGE in ${DOCKERFILES[@]}; do
         echo "Working on $(basename $(dirname ${IMAGE}))" >&2
-        NAME=$(build_docker "${IMAGE}" "${GITHUB_REPO}" "${HASHES[0]}" "${VENDOR}")
+        NAME=$(build_docker "${IMAGE}" "${GITHUB_REPOSITORY}" "${HASHES[0]}" "${VENDOR}")
         (set -x; docker tag "${NAME}" "${REGISTRY}/${NAME}:latest")
         (set -x; docker push "${REGISTRY}/${NAME}:latest")
         VERSION=$(docker_version ${IMAGE})
