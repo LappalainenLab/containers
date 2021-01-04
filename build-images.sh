@@ -29,7 +29,7 @@ function build_docker() {
     local root="$(pwd)"
     local builddir="$(dirname ${dockerfile})"
     local name="$(basename ${builddir}) | tr '[:upper:]' '[:lower:]'"
-    cd -v ${builddir}
+    cd ${builddir}
     (
         set -x
         docker build -t "${name}" . \
@@ -39,6 +39,7 @@ function build_docker() {
             --label "org.opencontainers.image.vendor=${vendor}" \
             --label "org.opencontainers.image.documentation=${repo}"
     )
+    cd ${root}
     echo "${name}"
 }
 
