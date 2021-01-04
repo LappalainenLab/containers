@@ -78,7 +78,7 @@ if [[ ${#DOCKERFILES[@]} -gt 0 ]]; then
         NAME=$(build_docker "${IMAGE}" "https://github.com/${GITHUB_REPOSITORY}" "${GITHUB_SHA}" "${VENDOR}")
         (set -x; docker tag "${NAME}" "${REGISTRY}/${NAME}:latest")
         (set -x; docker push "${REGISTRY}/${NAME}:latest")
-        VERSION=$(docker_version ${IMAGE})
+        VERSION=$(docker_version ${NAME})
         if [[ ! -z ${VERSION} ]]; then
             (set -x; docker tag ${NAME} "${REGISTRY}/${NAME}:${VERSION}")
             (set -x; docker push "${REGISTRY}/${NAME}:${VERSION}")
