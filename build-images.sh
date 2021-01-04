@@ -49,14 +49,15 @@ echo "Images built from ${GITHUB_REPOSITORY}" >&2
 echo "Images hosted at ${REGISTRY}" >&2
 
 #   Fetch the current master commit
+LL_HASH=$(set -x; git log -n 1 --format="%H" HEAD^1)
 (set -x; git fetch "https://github.com/${GITHUB_REPOSITORY}" +master:LLMASTER)
-(set -x; echo git diff --name-only ${GITHUB_SHA} LLMASTER) >&2
+(set -x; echo git diff --name-only ${GITHUB_SHA} ${LL_HASH}) >&2
 
 #   Set up holding arrays for changed image files that need to be rebuilt
 declare -a DOCKERFILES=()
 
 #   Find all changed image files
-for DIFF in $(set -x; git diff --name-only ${GITHUB_SHA} LLMASTER); do
+for DIFF in $(set -x; git diff --name-only ${GITHUB_SHA} ${LL_HASH}); do
     case $(basename ${DIFF}) in
         Dockerfile)
             echo "Adding ${DIFF} to check queue" >&2
