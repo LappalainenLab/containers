@@ -42,8 +42,16 @@ function build_docker() {
     echo "${name}"
 }
 
+#   Status messages
+echo "Building images from commit pushed by ${GITHUB_ACTOR}" >&2
+echo "Images provided by ${VENDOR}" >&2
+echo "Images built from ${GITHUB_REPO}" >&2
+echo "Images hosted at ${REGISTRY}" >&2
+
 #   Get the hashes between this current commit and any previous ones
 declare -a HASHES=($(set -x; git log -n 2 --format="%H"))
+
+echo "Comparing ${HASHES[0]} and ${HASHES[1]}" >&2
 
 [[ ${#HASHES[@]} -lt 2 ]] && (echo "Not enough hashes"; exit 0)
 
@@ -62,6 +70,7 @@ for diff in $(set -x; git diff --name-only ${HASHES[0]} ${HASHES[1]}); do
     esac
 done
 
+#   Build Docker images
 if [[ ${#DOCKERFILES[@]} -gt 0 ]]; then
     [[ -z ${DOCKER_TOKEN} ]] && (echo "No authentication token for Docker provided" >&2; exit 1)
     echo ${DOCKER_TOKEN} | docker login $(echo ${REGISTRY} | cut -f 1 -d '/') -u ${GITHUB_ACTOR} --password-stdin
