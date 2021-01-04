@@ -45,7 +45,7 @@ function build_docker() {
 #   Status messages
 echo "Building images from commit pushed by ${GITHUB_ACTOR}" >&2
 echo "Images provided by ${VENDOR}" >&2
-echo "Images built from ${GITHUB_REPO}" >&2
+echo "Images built from ${GITHUB_REPOSITORY}" >&2
 echo "Images hosted at ${REGISTRY}" >&2
 
 #   Get the hashes between this current commit and any previous ones
