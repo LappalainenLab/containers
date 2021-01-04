@@ -1,0 +1,15 @@
+name: Build and Deploy
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and Deploy Images
+        run: bash build-images.sh
+        env:
+          DOCKER_TOKEN: ${{ secrets.GHCR_TOKEN }}
